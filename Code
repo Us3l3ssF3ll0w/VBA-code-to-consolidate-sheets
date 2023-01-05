@@ -1,0 +1,80 @@
+Sub ConsolidateCSV()
+
+' Declare variables
+Dim wb As Workbook
+Dim ws As Worksheet
+Dim filePath As String
+Dim fileName As String
+Dim lastRow As Long
+
+' Prompt user for file location
+filePath = InputBox("Enter the file path:", "File Path")
+
+' Check if file path is empty
+If filePath = "" Then
+    MsgBox "No file path entered.", vbExclamation
+    Exit Sub
+End If
+
+' Add a trailing backslash to the file path if it's not already there
+If Right(filePath, 1) <> "\" Then
+    filePath = filePath & "\"
+End If
+
+' Create a new workbook
+Set wb = Workbooks.Add
+
+' Set the first worksheet as the active sheet
+Set ws = wb.Worksheets(1)
+
+' Get the last row of the active sheet
+lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+
+' Loop through each file in the file path and copy data to the active sheet
+fileName = Dir(filePath & "*.csv")
+Do While fileName <> ""
+    ' Import data from CSV file
+    With ws.QueryTables.Add(Connection:="TEXT;" & filePath & fileName, Destination:=ws.Range("A" & lastRow + 1))
+        .Name = "data"
+        .FieldNames = True
+        .RowNumbers = False
+        .FillAdjacentFormulas = False
+        .PreserveFormatting = True
+        .RefreshOnFileOpen = False
+        .RefreshStyle = xlInsertDeleteCells
+        .SavePassword = False
+        .SaveData = True
+        .AdjustColumnWidth = True
+        .RefreshPeriod = 0
+        .TextFilePromptOnRefresh = False
+        .TextFilePlatform = 1252
+        .TextFileStartRow = 1
+        .TextFileParseType = xlDelimited
+        .TextFileTextQualifier = xlTextQualifierDoubleQuote
+        .TextFileConsecutiveDelimiter = False
+        .TextFileTabDelimiter = True
+        .TextFileSemicolonDelimiter = False
+        .TextFileCommaDelimiter = True
+        .TextFileSpaceDelimiter = False
+        .TextFileColumnDataTypes = Array(1)
+        .TextFileTrailingMinusNumbers = True
+        .Refresh BackgroundQuery:=False
+    End With
+
+    ' Update last row
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+
+    ' Get next file
+    fileName = Dir()
+Loop
+
+' Autofit all columns
+ws.Columns.AutoFit
+
+' Save the workbook as a CSV file
+wb.SaveAs Filename:=Application.GetSaveAsFilename(InitialFileName:="Consolidated.csv", FileFilter:="CSV Files (*.csv), *.csv"), FileFormat:=xlCSV
+
+' Close the workbook
+wb.Close
+
+End Sub
