@@ -1,0 +1,7 @@
+Here's an Excel formula to count the occurrences of "top", "mid", and "bottom" in a column, and calculate the average percentage of each taking into account empty cells:
+
+=IF(COUNTA(A:A)=0, 0, SUMPRODUCT(COUNTIF(A:A,{"top","mid","bottom"})/COUNTA(A:A)*SUMPRODUCT(--(A:A={"top","mid","bottom"}),{100,50,0})/3))
+
+This formula is similar to the previous one, but it uses the IF function to check if the column has any data. If the column is empty, the formula returns 0. If the column has data, it proceeds to count the occurrences of "top", "mid", and "bottom", as well as calculate the average percentage.
+
+The COUNTA(A:A) function counts the total number of non-empty cells in the column. If the result of this function is equal to 0, it means the column is empty, so the formula returns 0. If the result is greater than 0, the formula proceeds to count the occurrences of "top", "mid", and "bottom", and calculate the average percentage as explained before.
