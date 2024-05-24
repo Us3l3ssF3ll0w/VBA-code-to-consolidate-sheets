@@ -1,0 +1,19 @@
+Private Sub Workbook_Open()
+    Dim ws As Worksheet
+    Dim rng As Range
+    Dim filterColumn As Long
+    Dim managerName As String
+
+    ' Set the worksheet and range where your data is located
+    Set ws = ThisWorkbook.Sheets("Sheet1") ' Change "Sheet1" to your actual sheet name
+    Set rng = ws.Range("A1:E100") ' Adjust the range as needed
+
+    ' Prompt the manager for their name
+    managerName = InputBox("Enter your name:")
+
+    ' Find the column containing the manager names
+    filterColumn = Application.Match("Manager Name", rng.Rows(1), 0)
+
+    ' Apply the filter
+    rng.AutoFilter Field:=filterColumn, Criteria1:=managerName
+End Sub
